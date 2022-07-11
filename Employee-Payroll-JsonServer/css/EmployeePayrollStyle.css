@@ -112,3 +112,12 @@ input{
     font-family: 'Roboto';
     gap: 10px;
 }
+.options{
+    font-size: 16px;
+    opacity: 1;
+    font-family: 'Roboto';
+    font-size: 16px;
+    width: 70px;
+    height: 30px;
+    margin-right: 20px;
+}
