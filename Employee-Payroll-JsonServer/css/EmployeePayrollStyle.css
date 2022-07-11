@@ -78,3 +78,15 @@ input{
     border: 1px solid gray;
     border-radius: 10px;
 }
+.radio{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.icon{
+    display: flex;
+}
+.radio img{
+    width: 35px;
+    height: 35px;
+}
