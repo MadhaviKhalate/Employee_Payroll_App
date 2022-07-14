@@ -1,59 +1,37 @@
+let employeePayrollList;
+
 window.addEventListener('DOMContentLoaded', (event)=>{
+    employeePayrollList = getEmployeeDateFromLocalStorage();
+    document.querySelector('.employee-count').textContent = employeePayrollList.length;
     createInnerHtml();
 });
 
-const createInnerHtml = () =>{
-    const headerHtml = "<tr class='table-header'><th></th><th>Name</th><th>Gender</th><th>Salary</th><th>Department</th><th>Start Date</th><th>Actions</th></tr>";
-    const innerHtml = `${headerHtml}
-        <tr>
-            <td><img src="../assets/employee-1.jpeg" alt="employee-1"></td>
-            <td>Prashant Bhoite</td>
-            <td>Male</td>
-            <td>50000</td>
-            <td>
-                <div class="department">Engineer</div>
-                <div class="department">Others</div>
-            </td>
-            <td>21 March 2022</td>
-            <td class="actions">
-                <img id="1" onclick="remove(this)" alt="delete" src="../assets/trash-icon.jpeg" width="20px" height="20px">
-                <img id="1" onclick="update(this)" alt="update" src="../assets/edit-icon.jpeg" width="20px" height="20px">
-            </td>
-        </tr>
-    `;
-    document.querySelector('#table').innerHTML = innerHtml;
+const getEmployeeDateFromLocalStorage = () =>{
+    return localStorage.getItem('EmployeePayrollList') ? JSON.parse(localStorage.getItem('EmployeePayrollList')) : [];
 }
 
-const createEmployeePayrollJSONObject = () =>{
-    let employeePayrollListLocal = [
-        {
-            _name: 'Elavarasu',
-            _gender: 'Male',
-            _department:[
-                'Engineer',
-                'Others'
-            ],
-            _salary: '50000',
-            _startDate:'10 June 2022',
-            _note:'',
-            _id: new Date().getTime(),
-            _profilePic: '../assets/Profile/employee-1.jpeg'
-        },
-        {
-            _name: 'Nantha Gopal',
-            _gender: 'Male',
-            _department:[
-                'Engineer',
-                'HR'
-            ],
-            _salary: '70000',
-            _startDate:'10 May 2022',
-            _note:'',
-            _id: new Date().getTime()+1,
-            _profilePic: '../assets/Profile/employee-4.jpeg'
-        }
-    ];
-    return employeePayrollListLocal;
+const createInnerHtml = () =>{
+    if(employeePayrollList.length == 0) {return;}
+    const headerHtml = "<tr class='table-header'><th></th><th>Name</th><th>Gender</th><th>Salary</th><th>Department</th><th>Start Date</th><th>Actions</th></tr>";
+    let innerHtml = `${headerHtml}`;
+    for(const employeePayrollData of employeePayrollList)
+    {
+        innerHtml = `${innerHtml}
+            <tr>
+                <td><img src="${employeePayrollData._profilePic}" alt=""></td>
+                <td>${employeePayrollData._name}</td>
+                <td>${employeePayrollData._gender}</td>
+                <td>${employeePayrollData._salary}</td>
+                <td>${getDept(employeePayrollData._department)}</td>
+                <td>${employeePayrollData._startDate}</td>
+                <td>
+                    <img class="actions" id="${employeePayrollData._id}" onclick="remove(this)" alt="delete" src="../assets/delete.png" width="20px" height="20px">
+                    <img class="actions" id="${employeePayrollData._id}" onclick="update(this)" alt="update" src="../assets/pen.png" width="20px" height="20px">
+                </td>
+            </tr>
+        `;
+    }
+    document.querySelector('#table').innerHTML = innerHtml;
 }
 
 const getDept = (deptList) =>{
