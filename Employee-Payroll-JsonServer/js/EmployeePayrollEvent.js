@@ -81,3 +81,16 @@ const getSelectedValues = (propertyValue) =>{
     });
     return selectedItems;
 }
+function createLocalStorage(employeePayroll){
+    let employeePayrollList = JSON.parse(localStorage.getItem("EmployeePayrollList"));
+    if(employeePayrollList != undefined)
+    {
+        employeePayrollList.push(employeePayroll);
+    }
+    else
+    {
+        employeePayrollList = [employeePayroll];
+    }
+    alert(employeePayrollList.toString());
+    localStorage.setItem("EmployeePayrollList", JSON.stringify(employeePayrollList));
+}
