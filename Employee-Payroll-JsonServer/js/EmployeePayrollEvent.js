@@ -39,6 +39,7 @@ window.addEventListener('DOMContentLoaded', (event) =>{
 const save = () =>{
     try{
         let employeePayroll = createEmployeePayroll();
+	    createLocalStorage(employeePayroll);
     }
     catch (ex){
         return;
@@ -81,7 +82,9 @@ const getSelectedValues = (propertyValue) =>{
     });
     return selectedItems;
 }
+
 function createLocalStorage(employeePayroll){
+    //localStorage.clear();
     let employeePayrollList = JSON.parse(localStorage.getItem("EmployeePayrollList"));
     if(employeePayrollList != undefined)
     {
