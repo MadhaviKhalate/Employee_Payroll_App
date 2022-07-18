@@ -1,0 +1,45 @@
+{
+  "employeePayrollDB": [
+    {
+      "_name": "Madhavi",
+      "_profilePic": "../assets/employee-2.jpeg",
+      "_gender": "Female",
+      "_department": [
+        "HR",
+        "Sales",
+        "Finance",
+        "Engineer",
+        "Others"
+      ],
+      "_salary": "100000",
+      "_notes": "Madhavi...",
+      "_startDate": "12 May 2022",
+      "id": 1
+    },
+    {
+      "_name": "Sahil",
+      "_profilePic": "../assets/employee-1.jpeg",
+      "_gender": "Male",
+      "_department": [
+        "Engineer"
+      ],
+      "_salary": "50000",
+      "_notes": "Sahil...",
+      "_startDate": "15 Jul 2021",
+      "id": 2
+    },
+    {
+      "_name": "Pradeep",
+      "_profilePic": "../assets/employee-3.jpeg",
+      "_gender": "Male",
+      "_department": [
+        "Sales",
+        "Engineer"
+      ],
+      "_salary": "75000",
+      "_notes": "Pradeep...",
+      "_startDate": "9 Feb 2021",
+      "id": 3
+    }
+  ]
+}

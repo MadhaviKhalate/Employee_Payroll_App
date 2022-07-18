@@ -1,13 +1,36 @@
 let employeePayrollList;
 
 window.addEventListener('DOMContentLoaded', (event)=>{
-    employeePayrollList = getEmployeeDateFromLocalStorage();
-    document.querySelector('.employee-count').textContent = employeePayrollList.length;
-    createInnerHtml();
+    if(siteProperties.use_local_storage.match("true")){
+        getEmployeeDateFromLocalStorage();
+    }
+    else{
+        getEmployeeDateFromServer();
+    }
 });
 
 const getEmployeeDateFromLocalStorage = () =>{
-    return localStorage.getItem('EmployeePayrollList') ? JSON.parse(localStorage.getItem('EmployeePayrollList')) : [];
+    employeePayrollList = localStorage.getItem('EmployeePayrollList') ? JSON.parse(localStorage.getItem('EmployeePayrollList')) : [];
+    processEmployeePayrollDataResponse();
+}
+
+const processEmployeePayrollDataResponse = () =>{
+    document.querySelector('.employee-count').textContent = employeePayrollList.length;
+    createInnerHtml();
+    localStorage.removeItem('editEmployee');
+}
+
+const getEmployeeDateFromServer =() =>{
+    makeServiceCall("GET", siteProperties.server_url, true)
+        .then(responseText =>{
+            employeePayrollList = JSON.parse(responseText);
+            processEmployeePayrollDataResponse();
+        })
+        .catch(error => {
+            console.log("Get Error Status: " + JSON.stringify(error));
+            employeePayrollList = [];
+            processEmployeePayrollDataResponse();
+        });
 }
 
 const createInnerHtml = () =>{
@@ -23,10 +46,10 @@ const createInnerHtml = () =>{
                 <td>${employeePayrollData._gender}</td>
                 <td>${employeePayrollData._salary}</td>
                 <td>${getDept(employeePayrollData._department)}</td>
-                <td>${employeePayrollData._startDate}</td>
+                <td>${stringifyDate(employeePayrollData._startDate)}</td>
                 <td>
-                    <img class="actions" id="${employeePayrollData._name}" onclick="remove(this)" alt="delete" src="../assets/trash-icon.jpeg">
-                    <img class="actions" id="${employeePayrollData._name}" onclick="update(this)" alt="update" src="../assets/edit-icon.jpeg">
+                    <img class="actions" id="${employeePayrollData.id}" onclick="remove(this)" alt="delete" src="../assets/trash-icon.jpeg">
+                    <img class="actions" id="${employeePayrollData.id}" onclick="update(this)" alt="update" src="../assets/edit-icon.jpeg">
                 </td>
             </tr>
         `;
@@ -43,12 +66,31 @@ const getDept = (deptList) =>{
     return dept;
 }
 
+const update = (node) =>{
+    let employeeData = employeePayrollList.find(empData => empData.id == node.id);
+    if(!employeeData) return; 
+    localStorage.setItem('editEmployee', JSON.stringify(employeeData));
+    window.location.replace(siteProperties.addEmployee);
+}
+
 const remove = (node) =>{
-    let employeeData = employeePayrollList.find(empData => empData._name == node.id);
-    if(!employeeData){return;}
-    const index =employeePayrollList.map(empData => empData._name).indexOf(employeeData._name);
+    let employeeData = employeePayrollList.find(empData => empData.id == node.id);
+    if(!employeeData) return;
+    const index = employeePayrollList.map(empData => empData.id).indexOf(employeeData.id);
     employeePayrollList.splice(index, 1);
-    localStorage.setItem("EmployeePayrollList", JSON.stringify(employeePayrollList));
-    document.querySelector('.employee-count').textContent = employeePayrollList.length;
-    createInnerHtml();
+    if(siteProperties.use_local_storage.match("true")){
+        localStorage.setItem('EmployeePayrollList', JSON.stringify(employeePayrollList));
+        document.querySelector('.employee-count').textContent = employeePayrollList.length;
+        createInnerHtml();
+    }
+    else{
+        const deleteUrl = siteProperties.server_url + employeeData.id.toString();
+        makeServiceCall("DELETE", deleteUrl, false)
+            .then(responseText =>{
+                createInnerHtml();
+            })
+            .catch(error =>{
+                console.log("Delete Error Status: " + JSON.stringify(error));
+            });
+    }
 }
